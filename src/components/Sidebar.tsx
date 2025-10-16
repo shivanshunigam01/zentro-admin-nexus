@@ -9,7 +9,9 @@ import {
   UserCircle,
   Settings,
   ChevronLeft,
-  X
+  X,
+  FileCheck,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -26,6 +28,8 @@ const menuItems = [
   { title: 'Leads', icon: UserCircle, path: '/leads' },
   { title: 'Blogs', icon: FileText, path: '/blogs' },
   { title: 'Categories', icon: Tags, path: '/categories' },
+  { title: 'Quotation', icon: FileCheck, path: '/quotation' },
+  { title: 'Payments', icon: CreditCard, path: '/payments' },
   { title: 'Contacts', icon: Mail, path: '/contacts' },
   { title: 'Settings', icon: Settings, path: '/settings' },
 ];
@@ -44,7 +48,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:sticky top-0 left-0 h-screen bg-sidebar-background border-r border-sidebar-border z-50 transition-transform duration-300 flex flex-col",
+          "fixed lg:sticky top-0 left-0 h-screen bg-[hsl(222,47%,11%)] border-r border-sidebar-border z-50 transition-transform duration-300 flex flex-col",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           "w-64"
         )}
@@ -82,8 +86,8 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                   onClick={onClose}
                   className={({ isActive }) =>
                     cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-smooth text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent",
-                      isActive && "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-elegant"
+                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-smooth text-[hsl(210,40%,98%)] hover:text-white hover:bg-[hsl(217,33%,17%)]",
+                      isActive && "bg-[hsl(250,69%,61%)] text-white font-medium shadow-elegant"
                     )
                   }
                 >

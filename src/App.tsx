@@ -8,6 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./layouts/DashboardLayout";
 import UserList from "./pages/Users/UserList";
 import ProductList from "./pages/Products/ProductList";
+import QuotationList from "./pages/Quotation/QuotationList";
+import PaymentList from "./pages/Payments/PaymentList";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -30,6 +32,8 @@ const App = () => (
             <Route path="/leads" element={<UserList />} />
             <Route path="/blogs" element={<ProductList />} />
             <Route path="/categories" element={<ProductList />} />
+            <Route path="/quotation" element={<QuotationList />} />
+            <Route path="/payments" element={<PaymentList />} />
             <Route path="/contacts" element={<UserList />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
