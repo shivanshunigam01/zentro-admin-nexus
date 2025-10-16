@@ -1,18 +1,20 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.zentroverse.com/api';
+// const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.zentroverse.com/api';
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "https://api.zentroverse.com/api";
 
 export const api = axios.create({
   baseURL: API_BASE,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem("auth_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,8 +28,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('auth_token');
-      window.location.href = '/login';
+      localStorage.removeItem("auth_token");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
@@ -36,18 +38,18 @@ api.interceptors.response.use(
 // Auth services
 export const authService = {
   login: async (email: string, password: string) => {
-    const { data } = await api.post('/auth/login', { email, password });
+    const { data } = await api.post("/auth/login", { email, password });
     if (data.token) {
-      localStorage.setItem('auth_token', data.token);
+      localStorage.setItem("auth_token", data.token);
     }
     return data;
   },
   logout: () => {
-    localStorage.removeItem('auth_token');
-    window.location.href = '/login';
+    localStorage.removeItem("auth_token");
+    window.location.href = "/login";
   },
   getCurrentUser: async () => {
-    const { data } = await api.get('/auth/me');
+    const { data } = await api.get("/auth/me");
     return data;
   },
 };
