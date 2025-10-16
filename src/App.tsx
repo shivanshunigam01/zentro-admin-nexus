@@ -10,6 +10,9 @@ import UserList from "./pages/Users/UserList";
 import ProductList from "./pages/Products/ProductList";
 import QuotationList from "./pages/Quotation/QuotationList";
 import PaymentList from "./pages/Payments/PaymentList";
+import Employees from "./pages/HR/Employees";
+import Salary from "./pages/HR/Salary";
+import Attendance from "./pages/HR/Attendance";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -27,14 +30,29 @@ const App = () => (
           
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/users" element={<UserList />} />
-            <Route path="/products" element={<ProductList />} />
+            
+            {/* HR Module */}
+            <Route path="/hr/employees" element={<Employees />} />
+            <Route path="/hr/salary" element={<Salary />} />
+            <Route path="/hr/attendance" element={<Attendance />} />
+            
+            {/* Sales Module */}
             <Route path="/leads" element={<UserList />} />
-            <Route path="/blogs" element={<ProductList />} />
-            <Route path="/categories" element={<ProductList />} />
             <Route path="/quotation" element={<QuotationList />} />
             <Route path="/payments" element={<PaymentList />} />
+            
+            {/* Inventory Module */}
+            <Route path="/products" element={<ProductList />} />
+            <Route path="/categories" element={<ProductList />} />
+            
+            {/* Content Module */}
+            <Route path="/blogs" element={<ProductList />} />
+            
+            {/* Communication Module */}
             <Route path="/contacts" element={<UserList />} />
+            
+            {/* System Module */}
+            <Route path="/users" element={<UserList />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
           

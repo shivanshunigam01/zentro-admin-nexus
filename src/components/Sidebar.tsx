@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -8,13 +9,18 @@ import {
   Tags, 
   UserCircle,
   Settings,
-  ChevronLeft,
   X,
   FileCheck,
-  CreditCard
+  CreditCard,
+  ChevronDown,
+  ChevronRight,
+  UsersRound,
+  DollarSign,
+  ClipboardCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -23,18 +29,63 @@ interface SidebarProps {
 
 const menuItems = [
   { title: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-  { title: 'Users', icon: Users, path: '/users' },
-  { title: 'Products', icon: Package, path: '/products' },
-  { title: 'Leads', icon: UserCircle, path: '/leads' },
-  { title: 'Blogs', icon: FileText, path: '/blogs' },
-  { title: 'Categories', icon: Tags, path: '/categories' },
-  { title: 'Quotation', icon: FileCheck, path: '/quotation' },
-  { title: 'Payments', icon: CreditCard, path: '/payments' },
-  { title: 'Contacts', icon: Mail, path: '/contacts' },
-  { title: 'Settings', icon: Settings, path: '/settings' },
+  {
+    title: 'HR',
+    icon: UsersRound,
+    subItems: [
+      { title: 'Employees', icon: Users, path: '/hr/employees' },
+      { title: 'Salary', icon: DollarSign, path: '/hr/salary' },
+      { title: 'Attendance', icon: ClipboardCheck, path: '/hr/attendance' },
+    ]
+  },
+  {
+    title: 'Sales',
+    icon: CreditCard,
+    subItems: [
+      { title: 'Leads', icon: UserCircle, path: '/leads' },
+      { title: 'Quotation', icon: FileCheck, path: '/quotation' },
+      { title: 'Payments', icon: CreditCard, path: '/payments' },
+    ]
+  },
+  {
+    title: 'Inventory',
+    icon: Package,
+    subItems: [
+      { title: 'Products', icon: Package, path: '/products' },
+      { title: 'Categories', icon: Tags, path: '/categories' },
+    ]
+  },
+  {
+    title: 'Content',
+    icon: FileText,
+    subItems: [
+      { title: 'Blogs', icon: FileText, path: '/blogs' },
+    ]
+  },
+  {
+    title: 'Communication',
+    icon: Mail,
+    subItems: [
+      { title: 'Contacts', icon: Mail, path: '/contacts' },
+    ]
+  },
+  {
+    title: 'System',
+    icon: Settings,
+    subItems: [
+      { title: 'Users', icon: Users, path: '/users' },
+      { title: 'Settings', icon: Settings, path: '/settings' },
+    ]
+  },
 ];
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
+  const toggleMenu = (title: string) => {
+    setOpenMenus(prev => ({ ...prev, [title]: !prev[title] }));
+  };
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -80,20 +131,62 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         <nav className="flex-1 p-4 overflow-y-auto">
           <ul className="space-y-2">
             {menuItems.map((item) => (
-              <li key={item.path}>
-                <NavLink
-                  to={item.path}
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-smooth text-[hsl(210,40%,98%)] hover:text-white hover:bg-[hsl(217,33%,17%)]",
-                      isActive && "bg-[hsl(250,69%,61%)] text-white font-medium shadow-elegant"
-                    )
-                  }
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.title}</span>
-                </NavLink>
+              <li key={item.path || item.title}>
+                {'path' in item ? (
+                  // Single menu item
+                  <NavLink
+                    to={item.path}
+                    onClick={onClose}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-lg transition-smooth text-[hsl(210,40%,98%)] hover:text-white hover:bg-[hsl(217,33%,17%)]",
+                        isActive && "bg-[hsl(250,69%,61%)] text-white font-medium shadow-elegant"
+                      )
+                    }
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.title}</span>
+                  </NavLink>
+                ) : (
+                  // Collapsible menu group
+                  <Collapsible
+                    open={openMenus[item.title]}
+                    onOpenChange={() => toggleMenu(item.title)}
+                  >
+                    <CollapsibleTrigger className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-smooth text-[hsl(210,40%,98%)] hover:text-white hover:bg-[hsl(217,33%,17%)]">
+                      <div className="flex items-center gap-3">
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.title}</span>
+                      </div>
+                      {openMenus[item.title] ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-1">
+                      <ul className="space-y-1 ml-4 pl-4 border-l border-[hsl(217,33%,17%)]">
+                        {item.subItems?.map((subItem) => (
+                          <li key={subItem.path}>
+                            <NavLink
+                              to={subItem.path}
+                              onClick={onClose}
+                              className={({ isActive }) =>
+                                cn(
+                                  "flex items-center gap-3 px-4 py-2 rounded-lg transition-smooth text-[hsl(210,40%,85%)] hover:text-white hover:bg-[hsl(217,33%,17%)]",
+                                  isActive && "bg-[hsl(250,69%,61%)] text-white font-medium"
+                                )
+                              }
+                            >
+                              <subItem.icon className="h-4 w-4" />
+                              <span className="text-sm">{subItem.title}</span>
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
               </li>
             ))}
           </ul>
