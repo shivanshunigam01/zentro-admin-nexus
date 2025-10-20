@@ -49,8 +49,8 @@ const menuItems = [
     title: "Sales",
     icon: CreditCard,
     subItems: [
-    { title: "Leads", icon: UserCircle, path: "/leads" },
-      { title: "Landing Leads", icon: UserCircle, path: "/leads" }, // <-- new module
+      { title: "Leads", icon: UserCircle, path: "/leads" },
+      { title: "Landing Leads", icon: UserCircle, path: "/landing-leads" }, // <-- new module
       { title: "Quotation", icon: FileCheck, path: "/quotation" },
       { title: "Payments", icon: CreditCard, path: "/payments" },
     ],

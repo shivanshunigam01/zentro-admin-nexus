@@ -26,7 +26,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/admin">
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<Login />} />
@@ -40,7 +40,8 @@ const App = () => (
             <Route path="/hr/attendance" element={<Attendance />} />
 
             {/* Sales Module */}
-            <Route path="/leads" element={<LandingLeadsList />} />
+            <Route path="/leads" element={<LeadsList />} />
+            <Route path="/landing-leads" element={<LandingLeadsList />} />
             <Route path="/leads/new" element={<LeadForm />} />
             <Route path="/leads/:id/edit" element={<LeadForm />} />
             <Route path="/quotation" element={<QuotationList />} />
