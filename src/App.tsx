@@ -17,6 +17,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import LeadsList from "./pages/Leads/LeadsList";
 import LeadForm from "./pages/Leads/LeadForm";
+import LandingLeadsList from "./pages/Leads/LandingLeadsList";
 
 const queryClient = new QueryClient();
 
@@ -39,7 +40,7 @@ const App = () => (
             <Route path="/hr/attendance" element={<Attendance />} />
 
             {/* Sales Module */}
-            <Route path="/leads" element={<LeadsList />} />
+            <Route path="/leads" element={<LandingLeadsList />} />
             <Route path="/leads/new" element={<LeadForm />} />
             <Route path="/leads/:id/edit" element={<LeadForm />} />
             <Route path="/quotation" element={<QuotationList />} />
@@ -49,7 +50,7 @@ const App = () => (
             <Route path="/products" element={<ProductList />} />
             <Route path="/categories" element={<ProductList />} />
 
-            {/* Content Module */}  
+            {/* Content Module */}
             <Route path="/blogs" element={<ProductList />} />
 
             {/* Communication Module */}

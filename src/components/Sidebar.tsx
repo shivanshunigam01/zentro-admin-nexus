@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Package, 
-  Mail, 
-  FileText, 
-  Tags, 
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Users,
+  Package,
+  Mail,
+  FileText,
+  Tags,
   UserCircle,
   Settings,
   X,
@@ -16,66 +16,74 @@ import {
   ChevronRight,
   UsersRound,
   DollarSign,
-  ClipboardCheck
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+  ClipboardCheck,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+/* ✅ UPDATED MENU: “Landing Leads” points to /leads */
 const menuItems = [
-  { title: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+  { title: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+
   {
-    title: 'HR',
+    title: "HR",
     icon: UsersRound,
     subItems: [
-      { title: 'Employees', icon: Users, path: '/hr/employees' },
-      { title: 'Salary', icon: DollarSign, path: '/hr/salary' },
-      { title: 'Attendance', icon: ClipboardCheck, path: '/hr/attendance' },
-    ]
+      { title: "Employees", icon: Users, path: "/hr/employees" },
+      { title: "Salary", icon: DollarSign, path: "/hr/salary" },
+      { title: "Attendance", icon: ClipboardCheck, path: "/hr/attendance" },
+    ],
   },
+
   {
-    title: 'Sales',
+    title: "Sales",
     icon: CreditCard,
     subItems: [
-      { title: 'Leads', icon: UserCircle, path: '/leads' },
-      { title: 'Quotation', icon: FileCheck, path: '/quotation' },
-      { title: 'Payments', icon: CreditCard, path: '/payments' },
-    ]
+    { title: "Leads", icon: UserCircle, path: "/leads" },
+      { title: "Landing Leads", icon: UserCircle, path: "/leads" }, // <-- new module
+      { title: "Quotation", icon: FileCheck, path: "/quotation" },
+      { title: "Payments", icon: CreditCard, path: "/payments" },
+    ],
   },
+
   {
-    title: 'Inventory',
+    title: "Inventory",
     icon: Package,
     subItems: [
-      { title: 'Products', icon: Package, path: '/products' },
-      { title: 'Categories', icon: Tags, path: '/categories' },
-    ]
+      { title: "Products", icon: Package, path: "/products" },
+      { title: "Categories", icon: Tags, path: "/categories" },
+    ],
   },
+
   {
-    title: 'Content',
+    title: "Content",
     icon: FileText,
-    subItems: [
-      { title: 'Blogs', icon: FileText, path: '/blogs' },
-    ]
+    subItems: [{ title: "Blogs", icon: FileText, path: "/blogs" }],
   },
+
   {
-    title: 'Communication',
+    title: "Communication",
     icon: Mail,
-    subItems: [
-      { title: 'Contacts', icon: Mail, path: '/contacts' },
-    ]
+    subItems: [{ title: "Contacts", icon: Mail, path: "/contacts" }],
   },
+
   {
-    title: 'System',
+    title: "System",
     icon: Settings,
     subItems: [
-      { title: 'Users', icon: Users, path: '/users' },
-      { title: 'Settings', icon: Settings, path: '/settings' },
-    ]
+      { title: "Users", icon: Users, path: "/users" },
+      { title: "Settings", icon: Settings, path: "/settings" },
+    ],
   },
 ];
 
@@ -83,12 +91,12 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
   const toggleMenu = (title: string) => {
-    setOpenMenus(prev => ({ ...prev, [title]: !prev[title] }));
+    setOpenMenus((prev) => ({ ...prev, [title]: !prev[title] }));
   };
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* Mobile overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -104,7 +112,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           "w-64"
         )}
       >
-        {/* Logo Section */}
+        {/* Logo */}
         <div className="p-6 border-b border-sidebar-border flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-elegant">
@@ -127,20 +135,20 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           </Button>
         </div>
 
-        {/* Navigation */}
+        {/* Nav */}
         <nav className="flex-1 p-4 overflow-y-auto">
           <ul className="space-y-2">
-            {menuItems.map((item) => (
+            {menuItems.map((item: any) => (
               <li key={item.path || item.title}>
-                {'path' in item ? (
-                  // Single menu item
+                {"path" in item ? (
                   <NavLink
                     to={item.path}
                     onClick={onClose}
                     className={({ isActive }) =>
                       cn(
                         "flex items-center gap-3 px-4 py-3 rounded-lg transition-smooth text-[hsl(210,40%,98%)] hover:text-white hover:bg-[hsl(217,33%,17%)]",
-                        isActive && "bg-[hsl(250,69%,61%)] text-white font-medium shadow-elegant"
+                        isActive &&
+                          "bg-[hsl(250,69%,61%)] text-white font-medium shadow-elegant"
                       )
                     }
                   >
@@ -148,7 +156,6 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                     <span>{item.title}</span>
                   </NavLink>
                 ) : (
-                  // Collapsible menu group
                   <Collapsible
                     open={openMenus[item.title]}
                     onOpenChange={() => toggleMenu(item.title)}
@@ -166,20 +173,21 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                     </CollapsibleTrigger>
                     <CollapsibleContent className="mt-1">
                       <ul className="space-y-1 ml-4 pl-4 border-l border-[hsl(217,33%,17%)]">
-                        {item.subItems?.map((subItem) => (
-                          <li key={subItem.path}>
+                        {item.subItems?.map((sub: any) => (
+                          <li key={sub.path}>
                             <NavLink
-                              to={subItem.path}
+                              to={sub.path}
                               onClick={onClose}
                               className={({ isActive }) =>
                                 cn(
                                   "flex items-center gap-3 px-4 py-2 rounded-lg transition-smooth text-[hsl(210,40%,85%)] hover:text-white hover:bg-[hsl(217,33%,17%)]",
-                                  isActive && "bg-[hsl(250,69%,61%)] text-white font-medium"
+                                  isActive &&
+                                    "bg-[hsl(250,69%,61%)] text-white font-medium"
                                 )
                               }
                             >
-                              <subItem.icon className="h-4 w-4" />
-                              <span className="text-sm">{subItem.title}</span>
+                              <sub.icon className="h-4 w-4" />
+                              <span className="text-sm">{sub.title}</span>
                             </NavLink>
                           </li>
                         ))}
