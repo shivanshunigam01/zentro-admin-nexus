@@ -49,7 +49,7 @@ const App = () => (
             <Route path="/products" element={<ProductList />} />
             <Route path="/categories" element={<ProductList />} />
 
-            {/* Content Module */}
+            {/* Content Module */}  
             <Route path="/blogs" element={<ProductList />} />
 
             {/* Communication Module */}
