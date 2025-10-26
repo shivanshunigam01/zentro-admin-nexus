@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-import { Eye, Loader2, RefreshCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { DataTable } from "@/components/DataTable";
+import { Eye, Loader2, RefreshCcw, Download } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -200,16 +200,109 @@ const LandingLeadsList = () => {
     setOpenView(true);
   };
 
+  // --- CSV Export helpers ---
+  const csvHeaders = [
+    "Name",
+    "Phone",
+    "Email",
+    "State",
+    "City",
+    "Pincode",
+    "Vehicle Models",
+    "Lead Source",
+    "CTA",
+    "Expected Month",
+    "Status",
+    "Created At",
+    "Updated At",
+    "Message",
+  ];
+
+  const toCsvCell = (val: any) => {
+    const s = Array.isArray(val)
+      ? val.join(" | ")
+      : val === undefined || val === null
+      ? ""
+      : String(val);
+    // escape quotes, wrap in quotes to protect commas/newlines
+    return `"${s.replace(/"/g, '""')}"`;
+  };
+
+  const buildCsv = (rows: Lead[]) => {
+    const lines = [
+      csvHeaders.map(toCsvCell).join(","),
+      ...rows.map((r) => {
+        return [
+          r.name,
+          r.contact,
+          r.email,
+          r.state ?? "",
+          r.city ?? "",
+          r.pincode ?? "",
+          (r.vehicleModels && r.vehicleModels.length
+            ? r.vehicleModels
+            : []
+          ).join(" | "),
+          r.source ?? "",
+          r.ctaSource ?? "",
+          r.expectedMonth ? dayjs(r.expectedMonth).format("YYYY-MM") : "",
+          r.status ?? "new",
+          r.createdAt ? dayjs(r.createdAt).format("YYYY-MM-DD HH:mm") : "",
+          r.updatedAt ? dayjs(r.updatedAt).format("YYYY-MM-DD HH:mm") : "",
+          (r.message ?? "").replace(/\r?\n/g, " "), // flatten newlines
+        ]
+          .map(toCsvCell)
+          .join(",");
+      }),
+    ];
+    return lines.join("\r\n");
+  };
+
+  const downloadCsv = (filename: string, csvText: string) => {
+    // BOM so Excel opens UTF-8 properly
+    const blob = new Blob(["\uFEFF" + csvText], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const onExportCsv = () => {
+    const rows = filtered; // export what the table currently shows
+    if (!rows.length) {
+      toast({
+        title: "Nothing to export",
+        description: "No rows match the current filters.",
+      });
+      return;
+    }
+    const csv = buildCsv(rows);
+    const stamp = dayjs().format("YYYYMMDD-HHmmss");
+    downloadCsv(`landing-leads-${stamp}.csv`, csv);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
+          <div className="mb-2">
+            <Button onClick={onExportCsv}>
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </Button>
+          </div>
           <h1 className="text-3xl font-heading font-bold">Landing Leads</h1>
           <p className="text-muted-foreground mt-1">
             Submissions from the Diwali & Chhath landing page
           </p>
         </div>
+
         <div className="flex items-center gap-2">
           <Input
             placeholder="Search name, phone, email, city, model…"
@@ -227,7 +320,6 @@ const LandingLeadsList = () => {
           </Button>
         </div>
       </div>
-
       {/* Table */}
       {loading ? (
         <div className="flex justify-center items-center py-10 text-muted-foreground">
@@ -335,6 +427,5 @@ const LandingLeadsList = () => {
     </div>
   );
 };
-
 
 export default LandingLeadsList;

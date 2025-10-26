@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Plus, Eye, Edit, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/DataTable";
+import { Plus, Eye, Edit, Trash2, Loader2, Download } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -173,17 +173,92 @@ const LeadsList = () => {
       setLoading(false);
     }
   };
+  // --- CSV Export helpers ---
+  const csvHeaders = [
+    "Name",
+    "Email",
+    "Phone",
+    "Industry",
+    "Message",
+    "Status",
+    "Budget",
+    "Created At",
+    "Updated At",
+  ];
+
+  const toCsvCell = (val: any) => {
+    const s =
+      val === undefined || val === null
+        ? ""
+        : Array.isArray(val)
+        ? val.join(" | ")
+        : String(val);
+    return `"${s.replace(/"/g, '""')}"`; // escape quotes
+  };
+
+  const buildCsv = (rows: any[]) => {
+    const lines = [
+      csvHeaders.map(toCsvCell).join(","),
+      ...rows.map((r) =>
+        [
+          r.name ?? "",
+          r.email ?? "",
+          r.phone ?? "",
+          r.industry ?? "",
+          (r.message ?? "").replace(/\r?\n/g, " "),
+          r.status ?? "",
+          r.budget ? `₹${r.budget}` : "",
+          r.createdAt ? dayjs(r.createdAt).format("YYYY-MM-DD HH:mm") : "",
+          r.updatedAt ? dayjs(r.updatedAt).format("YYYY-MM-DD HH:mm") : "",
+        ]
+          .map(toCsvCell)
+          .join(",")
+      ),
+    ];
+    return lines.join("\r\n");
+  };
+
+  const downloadCsv = (filename: string, csvText: string) => {
+    const blob = new Blob(["\uFEFF" + csvText], {
+      type: "text/csv;charset=utf-8;",
+    }); // UTF-8 BOM for Excel
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const onExportCsv = () => {
+    if (!leads.length) {
+      toast({ title: "Nothing to export", description: "No leads available." });
+      return;
+    }
+    const csv = buildCsv(leads);
+    const stamp = dayjs().format("YYYYMMDD-HHmmss");
+    downloadCsv(`leads-${stamp}.csv`, csv);
+  };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
+          <div className="mb-2">
+            <Button onClick={onExportCsv}>
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </Button>
+          </div>
           <h1 className="text-3xl font-heading font-bold">Leads</h1>
           <p className="text-muted-foreground mt-1">
             All contact form submissions with full details
           </p>
         </div>
+
         <Button
           onClick={() =>
             toast({ title: "To add a lead", description: "Use contact form." })
